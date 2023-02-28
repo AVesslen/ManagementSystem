@@ -1,0 +1,69 @@
+﻿
+<div class="machine-create">
+
+    <h2>Add a new machine</h2>
+
+    <EditForm EditContext="editContext" OnValidSubmit="OnAddMachines" class="py-4 container">
+
+        <div class="row">
+            <div class="col-md-5">
+
+                <div class="form-group">
+                    <label for="Name" class="col-form-label col-md-4">Name: </label>
+                    <div class="col-md-8">
+                        <InputText id="name" @bind-Value="@createMachine.Name" class="form-control" placeholder="Name"></InputText>
+                    </div>
+                    <ValidationMessage For="@(() => createMachine.Name)"></ValidationMessage>
+                </div>
+
+
+                <div class="form-group">
+                    <label for="IsOnline" class="col-form-label col-md-4">Status at start: </label>
+                    <div class="col-md-8">
+                        <InputSelect id="isOnline" class="form-select col-md-8" @bind-Value="@createMachine.IsOnline">
+                            <option value="-1" disabled selected>(select)</option>
+                            <option value="true">Online</option>
+                            <option value="false">Offline</option>
+                        </InputSelect>
+                    </div>
+                </div>
+
+
+                <div class="input-group-append input-group-lg">
+                    <button type="submit" id="saveMachineBtn" class="btn btn-success">Save</button>
+                </div>
+
+
+            </div>
+
+        </div>
+        <DataAnnotationsValidator></DataAnnotationsValidator>
+        @* <ValidationSummary></ValidationSummary>*@
+    </EditForm>
+</div>
+
+<div class="alert @StatusClass">@Message</div>
+
+
+@code {
+    private CreateMachine createMachine = new CreateMachine();
+    private EditContext editContext = default!;
+    protected string StatusClass = string.Empty;
+    protected string Message = string.Empty;
+
+    [Parameter]
+    public EventCallback<CreateMachine> AddMachines { get; set; }
+
+    protected override void OnInitialized()
+    {
+        editContext = new EditContext(createMachine);
+    }
+
+    public async Task OnAddMachines()
+    {
+        await AddMachines.InvokeAsync(createMachine);
+        createMachine.Name = string.Empty;
+    }
+
+
+}

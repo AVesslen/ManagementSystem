@@ -1,0 +1,43 @@
+﻿
+@page "/machineedit"
+            <AddMachine AddMachines="AddMachine"></AddMachine>
+<div class="alert @StatusClass">@Message</div>
+
+@code {
+    private List<Machine> machines = new List<Machine>();
+    protected string Message = string.Empty;
+    protected string StatusClass = string.Empty;
+
+    [Inject]
+    public IMSClient MSClient { get; set; } = default!;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = await MSClient.GetAllAsync();
+        if (res is not null)
+            machines = res.ToList();
+    }
+
+    private async Task AddMachine(CreateMachine createMachine)
+    {
+        if (createMachine is null)
+        {
+            throw new ArgumentNullException(nameof(CreateMachine));
+        }
+
+        var addedMachine = await MSClient.PostAsync(createMachine);
+
+        if (addedMachine is null)
+        {
+            StatusClass = "alert-danger";
+            Message = "Something went wrong when adding the new machine.";
+            throw new ArgumentNullException(nameof(addedMachine));            
+        }
+        else
+        {
+            StatusClass = "alert-success";
+            Message = "New machine added successfully.";
+        }
+        machines.Add(addedMachine);
+    }
+}

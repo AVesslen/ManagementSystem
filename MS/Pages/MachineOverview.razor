@@ -1,0 +1,74 @@
+﻿@page "/machineoverview"
+
+<h2>Dashboard</h2>
+<h5>Overview of all machines</h5>
+
+<div class="alert @StatusClass">@Message</div>
+
+@if (machines == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row justify-content-evenly" id="grid">
+
+        <div class="col-xl-3">
+            <Statistics></Statistics>
+        </div>
+
+        <div class="col-lg-8">
+
+            <div class="card rounded-3 overview shadow-sm">
+                <div class="card-header py-3">
+                    <h4>List of devices</h4>
+                    <a class="btn btn-secondary" id="addMachineBtn" href="/machineedit" role="button"> <span class="oi oi-plus" aria-hidden="true"></span> Add new device</a>
+                </div>
+
+                <table class="table-responsive">
+                    <thead @*class="table-primary" *@>
+                        <tr>
+                            <th>Device id</th>
+                            <th>Name</th>
+                            <th>Last updated</th>
+                            <th>Status</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+
+                        @foreach (var machine in machines)
+                        {
+                            <tr class="bg-blue">
+                                <td>@machine.Id</td>
+                                <td>@machine.Name</td>
+                                <td>@machine.LastUpdated.ToString("dd-MMM-yyyy HH:mm")</td>
+                                <td class="pt-2 pb-2">
+                                    @if (machine.IsOnline)
+                                    {
+                                        <button type="button" id="onlineBtn" class="btn btn-success" @onclick="async () => await StatusToggle(machine)">Online</button>
+
+                                    }
+                                    else
+                                    {
+                                        <button type="button" id="offlineBtn" class="btn btn-danger" @onclick="async () => await StatusToggle(machine)">Offline</button>
+                                    }
+                                    <a></a>
+                                    <span @onclick="async () => await Delete(machine)" class="text-dark oi oi-trash" id="trashBtn" aria-hidden="true" role="button"></span>
+                                </td>
+                            </tr>
+                            <tr id="spacing-row">
+                                <td></td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+}
+
