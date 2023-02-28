@@ -10,8 +10,9 @@ namespace MS.Services
 
         public MSClient(HttpClient httpClient)
         {
-            this.httpClient = httpClient;
-            this.httpClient.BaseAddress = new Uri("https://localhost:7257");
+            this.httpClient = httpClient;        
+            //this.httpClient.BaseAddress = new Uri("https://localhost:7257");
+            this.httpClient.BaseAddress = new Uri("https://industryweb.azurewebsites.net/");
             this.httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
